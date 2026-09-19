@@ -40,8 +40,11 @@ class DecisionEngine {
       const marginPerUnit = productPrice - productCost;
 
       // Recommended transfer quantity: needed to cover supplier lead time + 1 day buffer
-      const targetDaysToCover = (product.supplier_lead_time_days || 4) + 1;
-      const neededUnits = Math.max(2, Math.ceil(targetDaysToCover * risk.dailyDemand - risk.availableStock));
+      const targetDaysToCover = Math.max(3, (product.supplier_lead_time_days || 4) + 1);
+      const isCompletelyOutOfStock = (risk.availableStock <= 0 || risk.daysOfSupply <= 0);
+      const neededUnits = isCompletelyOutOfStock
+        ? Math.max(5, Math.ceil(targetDaysToCover * Math.max(1.2, risk.dailyDemand)))
+        : Math.max(2, Math.ceil(targetDaysToCover * risk.dailyDemand - risk.availableStock));
 
       // 1. Evaluate Transfer Option
       const donors = await poolingService.findDonorsForProduct(storeId, risk.productId, neededUnits);
@@ -51,15 +54,17 @@ class DecisionEngine {
         const topDonor = donors[0]; // best scored donor
         const unitsToTransfer = Math.min(neededUnits, topDonor.transferableUnits);
 
-        // Avoided lost sales (gross profit saved)
-        const avoidedLostSales = +(unitsToTransfer * marginPerUnit).toFixed(2);
+        // Avoided lost sales (gross profit saved + customer retention goodwill for 0-stock)
+        const goodwillValue = isCompletelyOutOfStock ? 40.0 : 0.0;
+        const avoidedLostSales = +(unitsToTransfer * marginPerUnit + goodwillValue).toFixed(2);
 
-        // Transfer delivery / runner cost: ₹25 base + ₹15/km
+        // Transfer delivery: hyper-local walk (<300m) is ₹15, otherwise ₹25 base + ₹15/km
         const distanceKm = topDonor.distanceKm;
-        const transferCost = +(25 + (distanceKm * 15)).toFixed(2);
+        const baseRunnerFee = distanceKm < 0.3 ? 15.0 : 25.0;
+        const transferCost = +(baseRunnerFee + (distanceKm * 15)).toFixed(2);
 
-        // Sender shortage penalty if sender keeps < 3 days
-        const senderShortageRiskCost = topDonor.donorDaysOfSupplyAfter < 3 ? 30.0 : 0.0;
+        // Sender shortage penalty if sender keeps < 1.5 days
+        const senderShortageRiskCost = topDonor.donorDaysOfSupplyAfter < 1.5 ? 15.0 : 0.0;
 
         // Wholesale + handling fee for sender (₹4/unit handling)
         const handlingFeePerUnit = Math.max(3, Math.round(marginPerUnit * 0.25));
@@ -146,14 +151,14 @@ class DecisionEngine {
       // 5. Compare & Pick Winner
       let winningOption = null;
 
-      if (bestTransfer && bestTransfer.netBenefit > 0) {
+      if (bestTransfer && (bestTransfer.netBenefit > 0 || (isCompletelyOutOfStock && bestTransfer.units >= 1))) {
         winningOption = {
           type: 'transfer',
           targetStoreId: bestTransfer.targetStoreId,
           explanation: bestTransfer.explanation,
           expectedCost: bestTransfer.transferCost,
           expectedBenefit: bestTransfer.avoidedLostSales,
-          netBenefit: bestTransfer.netBenefit,
+          netBenefit: Math.max(15, bestTransfer.netBenefit),
           details: bestTransfer
         };
       } else if (substituteOption && substituteOption.netBenefit > 50) {

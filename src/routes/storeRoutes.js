@@ -157,6 +157,28 @@ router.post('/auth/register', async (req, res) => {
           ON CONFLICT (store_id, product_id, batch_id) DO NOTHING
         `).run(newStoreId, p.id, qty, expiry);
       }
+
+      // Seed 14 days of historical sales logs so forecasting and transfer engines work immediately
+      const baseDailyDemand = {
+        P101: 18, P102: 8, P103: 6, P104: 10, P105: 6,
+        P201: 4, P202: 3, P203: 5, P204: 3, P205: 4,
+        P301: 6, P302: 4, P303: 7, P304: 3, P305: 3,
+        P401: 4, P402: 2, P403: 3, P404: 5, P405: 2,
+        P501: 6, P502: 5, P503: 12, P504: 3, P505: 3
+      };
+      const insertSale = db.prepare('INSERT INTO sales_log (store_id, product_id, quantity, sold_at, was_stockout_period) VALUES (?, ?, ?, ?, FALSE)');
+      for (let day = 14; day >= 1; day--) {
+        const soldDate = new Date();
+        soldDate.setDate(soldDate.getDate() - day);
+        for (const prod of products) {
+          const base = baseDailyDemand[prod.id] || 4;
+          const isWeekend = (day % 7 === 1 || day % 7 === 2);
+          const weekendFactor = isWeekend ? 1.3 : 0.95;
+          const noise = (Math.random() - 0.5) * 2;
+          const qtySold = Math.max(1, Math.round(base * weekendFactor + noise));
+          await insertSale.run(newStoreId, prod.id, qtySold, soldDate.toISOString());
+        }
+      }
     }
 
     // Generate active session token

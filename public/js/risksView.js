@@ -182,8 +182,18 @@ const RisksView = {
         `;
       } else {
         actionBtnHtml = `
-          <button class="btn btn-secondary btn-block" onclick="App.showToast('Reorder scheduled with distributor distributor delivery cycle.', 'info')">
+          <button class="btn btn-secondary btn-block" onclick="App.showToast('Reorder scheduled with distributor delivery cycle.', 'info')">
             <i class="bx bx-package"></i> Queue Supplier Reorder
+          </button>
+        `;
+      }
+
+      // If transfer is available as an alternative option, always offer it!
+      if (winner.type !== 'transfer' && comp.transfer && comp.transfer.targetStoreName) {
+        const altTransferDetails = JSON.stringify(comp.transfer).replace(/"/g, '&quot;');
+        actionBtnHtml += `
+          <button class="btn btn-primary btn-sm btn-block mt-2" onclick="RisksView.openTransferModal('${rec.productId}', '${rec.productName}', ${altTransferDetails})">
+            <i class="bx bx-transfer-alt"></i> Request Transfer from ${comp.transfer.targetStoreName} (${comp.transfer.distanceMeters}m away)
           </button>
         `;
       }

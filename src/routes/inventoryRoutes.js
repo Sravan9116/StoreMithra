@@ -159,4 +159,18 @@ router.post('/confidence/confirm', async (req, res) => {
   }
 });
 
+// GET /api/inventory/:store_id/donors/:product_id - Find donor stores with surplus for a specific product
+router.get('/inventory/:store_id/donors/:product_id', async (req, res) => {
+  try {
+    const { store_id, product_id } = req.params;
+    const requestedQty = parseInt(req.query.quantity || '5', 10);
+    const poolingService = require('../services/poolingService');
+    const donors = await poolingService.findDonorsForProduct(store_id, product_id, requestedQty);
+    const product = await db.prepare('SELECT * FROM products WHERE id = ?').get(product_id);
+    res.json({ success: true, donors, product });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 module.exports = router;

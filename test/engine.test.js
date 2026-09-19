@@ -11,7 +11,8 @@ const perishablesService = require('../src/services/perishablesService');
 async function runTests() {
   console.log('🧪 Starting StoreMithra PostgreSQL Core Engine Tests...\n');
 
-  // 1. Seed database
+  // 1. Initialize schema & seed database
+  await db.init();
   await seedDatabase();
 
   // Test 1: Verify Stores & Inventory Seeding in PostgreSQL

@@ -100,6 +100,21 @@ const db = {
   },
 
   async init() {
+    const pgdataPath = path.join(__dirname, '..', '..', 'data', 'pgdata');
+    try {
+      await pool.query('SELECT 1');
+    } catch (err) {
+      if ((err.code === 'ECONNREFUSED' || err.message?.includes('ECONNREFUSED')) && fs.existsSync(pgdataPath)) {
+        console.log('🔄 PostgreSQL server is offline. Starting local PostgreSQL cluster...');
+        const { spawnSync } = require('child_process');
+        try {
+          spawnSync('pg_ctl', ['-D', pgdataPath, '-l', path.join(pgdataPath, 'postgres.log'), 'start'], { shell: true });
+          await new Promise(r => setTimeout(r, 1500));
+        } catch (e) {
+          console.warn('Could not auto-start pg_ctl:', e.message);
+        }
+      }
+    }
     const schemaPath = path.join(__dirname, '..', 'models', 'schema.pg.sql');
     if (fs.existsSync(schemaPath)) {
       const sql = fs.readFileSync(schemaPath, 'utf8');
