@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StoreMithra — Multi-Store Inventory Pooling & Forecasting</title>
+  <meta name="description"
+    content="Local retail collaborative inventory pooling, demand forecasting, confidence decay tracking, and automated stockout prevention with transparent money math.">
+
+  <!-- Fonts: Outfit for headings, Inter for UI text -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Leaflet CSS for Store Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+  <!-- Boxicons CSS Icons Library -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+  <!-- Custom Design System Stylesheet -->
+  <link rel="stylesheet" href="public/css/style.css?v=3.1">
+</head>
+
+<body class="theme-light">
+  <!-- Top App Navigation -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="logo-icon"><i class="bx bxs-store-alt"></i></div>
+        <div class="brand-text">
+          <h1>StoreMithra</h1>
+          <span class="tagline">LocalStock Collaborative Pooling & Forecasting</span>
+        </div>
+      </div>
+
+      <!-- Store Switcher & Merchant Profile Badge -->
+      <div class="store-selector-wrapper">
+        <div id="merchantProfileBadge" class="merchant-badge-btn"
+          title="View & Edit Merchant Store Profile & Governance">
+          <div class="merchant-avatar">
+            <i class="bx bxs-store-alt"></i>
+          </div>
+          <div class="merchant-meta">
+            <span class="merchant-owner" id="headerOwnerName">Ramesh Gupta</span>
+            <span class="merchant-store" id="headerStoreName">Sri Lakshmi Kirana</span>
+          </div>
+          <i class="bx bx-chevron-down dropdown-arrow"></i>
+        </div>
+
+        <button id="btnOpenLoginModal" class="btn btn-secondary btn-sm switch-btn"
+          title="Switch Store Profile or Login">
+          <i class="bx bx-transfer"></i> <span>Switch / Login</span>
+        </button>
+
+        <a href="/register" id="btnHeaderRegister" class="btn btn-secondary btn-sm"
+          style="display: inline-flex; align-items: center; gap: 0.35rem; text-decoration: none; border-color: var(--pink-border); color: var(--pink-primary); font-weight: 700;"
+          title="Register New Kirana Store">
+          <i class="bx bx-user-plus"></i> <span>+ Register</span>
+        </a>
+
+        <a href="/" id="btnHeaderOverview" class="btn btn-ghost btn-sm"
+          style="display: inline-flex; align-items: center; gap: 0.35rem; text-decoration: none; color: var(--text-muted);"
+          title="View Public Site Overview & How StoreMithra Works">
+          <i class="bx bx-globe"></i> <span>Site Overview</span>
+        </a>
+
+        <select id="storeSelect" class="store-dropdown" style="display: none;">
+          <option value="">Loading stores...</option>
+        </select>
+
+        <div id="storeReputationBadge" class="reputation-badge" title="Store Reputation & Fulfillment Score">
+          <i class="bx bxs-star text-warning"></i> <span id="repScoreVal">95% Rep</span>
+        </div>
+        <div id="storeSharingBadge" class="sharing-badge" title="Data Sharing Mode">
+          <i class="bx bxs-shield-quarter text-pink"></i> <span id="sharingModeVal">Full Pool</span>
+        </div>
+      </div>
+
+      <!-- Quick Action Simulation Controls -->
+      <div class="header-actions">
+        <button id="btnFastForward" class="btn btn-secondary btn-sm"
+          title="Fast-forward 2 days to witness confidence decay and new stockout risks">
+          <i class="bx bx-fast-forward"></i> +2 Days
+        </button>
+        <button id="btnSimulateSale" class="btn btn-secondary btn-sm" title="Simulate retail customer sales">
+          <i class="bx bx-cart-add"></i> Quick Sale
+        </button>
+        <button id="btnResetDemo" class="btn btn-ghost btn-sm" title="Reset all data to default demo state">
+          <i class="bx bx-reset"></i> Reset
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs-bar">
+      <div class="tabs-container">
+        <button class="nav-tab active" data-tab="dashboard">
+          <i class="bx bxs-bell-ring tab-icon"></i> Today's Actions
+          <span id="riskCountBadge" class="badge badge-alert">0</span>
+        </button>
+        <button class="nav-tab" data-tab="map">
+          <i class="bx bx-map-alt tab-icon"></i> Nearby Store Network
+        </button>
+        <button class="nav-tab" data-tab="inventory">
+          <i class="bx bx-package tab-icon"></i> Stock & Barcode
+        </button>
+        <button class="nav-tab" data-tab="transfers">
+          <i class="bx bx-transfer-alt tab-icon"></i> Transfers Hub
+          <span id="transferCountBadge" class="badge badge-indigo">0</span>
+        </button>
+        <button class="nav-tab" data-tab="simulation">
+          <i class="bx bx-bar-chart-alt-2 tab-icon"></i> Pooling vs Solo Impact
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Application Body -->
+  <main class="app-main">
+    <div class="content-wrapper">
+
+      <!-- Toast / Notification Alert Container -->
+      <div id="toastContainer" class="toast-container"></div>
+
+      <!-- ==================================================== -->
+      <!-- TAB 1: DASHBOARD (TODAY'S ACTIONS & DECISION ENGINE) -->
+      <!-- ==================================================== -->
+      <section id="tab-dashboard" class="tab-view active">
+        <!-- Daily Nudge Prompt (Flow C: Nudge, don't nag) -->
+        <div id="dailyNudgesContainer" class="nudges-wrapper"></div>
+
+        <!-- Waste-Risk Banner (Perishables near expiry) -->
+        <div id="wasteRiskContainer" class="waste-alert-wrapper"></div>
+
+        <!-- Top Overview Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon alert-bg"><i class="bx bx-error-circle"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">Stockout Risks</span>
+              <span id="statRiskCount" class="stat-value text-alert">0</span>
+              <span class="stat-sub">Needs attention today</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon success-bg"><i class="bx bx-rupee"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">Avoidable Lost Sales</span>
+              <span id="statSavings" class="stat-value text-success">₹0</span>
+              <span class="stat-sub">Recoverable via pooling</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon info-bg"><i class="bx bxs-truck"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">Active Transfers</span>
+              <span id="statTransfers" class="stat-value text-indigo">0</span>
+              <span class="stat-sub">Moving in network</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon warning-bg"><i class="bx bx-grid-alt"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">SKUs Monitored</span>
+              <span id="statTotalItems" class="stat-value">25</span>
+              <span class="stat-sub">With confidence scores</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Risk & Decision Cards Container -->
+        <div class="section-header">
+          <div>
+            <h2>Immediate Decision Queue</h2>
+            <p class="section-desc">The decision engine evaluates transfer vs supplier reorder vs substitution — with
+              exact money math shown.</p>
+          </div>
+          <button id="btnRefreshDashboard" class="btn btn-secondary btn-sm"><i class="bx bx-refresh"></i> Refresh
+            Queue</button>
+        </div>
+
+        <div id="recommendationsList" class="recommendations-grid">
+          <div class="loading-spinner">Loading recommendations...</div>
+        </div>
+      </section>
+
+      <!-- ==================================================== -->
+      <!-- TAB 2: NEARBY STORE NETWORK (LEAFLET.JS MAP)        -->
+      <!-- ==================================================== -->
+      <section id="tab-map" class="tab-view">
+        <div class="map-view-layout">
+          <div class="map-sidebar">
+            <h3>Nearby Pooling Network</h3>
+            <p class="text-muted text-sm">Small shops within walking / bike runner range sharing surplus visibility.</p>
+
+            <div class="filter-group mt-3">
+              <label for="mapRadiusSelect" class="text-sm font-semibold">Search Radius:</label>
+              <select id="mapRadiusSelect" class="form-select">
+                <option value="1500">1.5 km (Hyper-local runner)</option>
+                <option value="3000" selected>3.0 km (Neighborhood cluster)</option>
+                <option value="5000">5.0 km (Extended cluster)</option>
+              </select>
+            </div>
+
+            <div class="legend-box mt-3">
+              <div class="legend-title">Map Legend:</div>
+              <div class="legend-item"><span class="legend-dot dot-blue"></span> Your Active Store</div>
+              <div class="legend-item"><span class="legend-dot dot-green"></span> Neighbor with Surplus Stock</div>
+              <div class="legend-item"><span class="legend-dot dot-red"></span> Neighbor at Stockout Risk</div>
+              <div class="legend-item"><span class="legend-line"></span> Active Transfer Route</div>
+            </div>
+
+            <div class="mt-4">
+              <h4 class="text-sm font-semibold text-muted">STORES IN RADIUS (<span id="storesInRadiusCount">0</span>)
+              </h4>
+              <div id="mapStoreList" class="map-store-list mt-2"></div>
+            </div>
+          </div>
+
+          <div class="map-container-wrapper">
+            <div id="storeMap" class="leaflet-map-element"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================================================== -->
+      <!-- TAB 3: STORE INVENTORY & QUICK BARCODE POS          -->
+      <!-- ==================================================== -->
+      <section id="tab-inventory" class="tab-view">
+        <!-- Fast Barcode / Search Tool -->
+        <div class="inventory-controls-panel">
+          <div class="barcode-search-box">
+            <i class="bx bx-search search-icon"></i>
+            <input type="text" id="inventorySearch" placeholder="Search product name, category, or brand..."
+              class="form-input">
+          </div>
+
+          <div class="barcode-quick-action">
+            <i class="bx bx-barcode barcode-icon"></i>
+            <input type="text" id="barcodeScanInput" placeholder="Scan/Type Barcode (e.g. 890123400203)..."
+              class="form-input barcode-input">
+            <button id="btnBarcodeSale" class="btn btn-danger btn-sm" title="Quick Sell (-1)"><i
+                class="bx bx-minus"></i> 1 Tap</button>
+            <button id="btnBarcodeRestock" class="btn btn-success btn-sm" title="Quick Restock (+5)"><i
+                class="bx bx-plus"></i> 5 Restock</button>
+          </div>
+        </div>
+
+        <!-- Filter Pills: Category & Confidence Filter -->
+        <div class="filter-pills-row">
+          <div class="filter-group-inline">
+            <span class="filter-label">Category:</span>
+            <button class="pill-btn active" data-cat="all">All</button>
+            <button class="pill-btn" data-cat="Dairy">Dairy</button>
+            <button class="pill-btn" data-cat="Bakery">Bakery</button>
+            <button class="pill-btn" data-cat="Staples">Staples</button>
+            <button class="pill-btn" data-cat="Cooking Oils">Cooking Oils</button>
+            <button class="pill-btn" data-cat="Cleaning">Cleaning</button>
+            <button class="pill-btn" data-cat="Snacks">Snacks</button>
+          </div>
+
+          <div class="filter-group-inline">
+            <span class="filter-label">Confidence:</span>
+            <button class="pill-btn active" data-conf="all">All</button>
+            <button class="pill-btn" data-conf="high"><i class="bx bxs-circle text-success"></i> Fresh</button>
+            <button class="pill-btn" data-conf="medium"><i class="bx bxs-circle text-warning"></i> Stale</button>
+            <button class="pill-btn" data-conf="low"><i class="bx bxs-circle text-alert"></i> Unconfirmed</button>
+          </div>
+        </div>
+
+        <!-- Inventory List / Table -->
+        <div class="inventory-table-card">
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Product & Pack</th>
+                  <th>Category</th>
+                  <th>Selling / Cost</th>
+                  <th>Stock Qty</th>
+                  <th>Confidence Badge</th>
+                  <th>Last Update</th>
+                  <th class="text-right">Quick Shopkeeper Actions</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryTableBody">
+                <tr>
+                  <td colspan="7" class="text-center py-4">Loading store inventory...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================================================== -->
+      <!-- TAB 4: TRANSFERS HUB (INCOMING & OUTGOING)           -->
+      <!-- ==================================================== -->
+      <section id="tab-transfers" class="tab-view">
+        <div class="transfers-layout">
+          <!-- Incoming Demands on My Store -->
+          <div class="transfers-column">
+            <div class="column-header">
+              <div>
+                <h3>Incoming Demands on Your Stock</h3>
+                <p class="text-muted text-sm">Nearby stores requesting surplus from you. You earn a handling fee!</p>
+              </div>
+              <span id="incomingCount" class="badge badge-indigo">0</span>
+            </div>
+            <div id="incomingTransfersList" class="transfers-list">
+              <div class="empty-state">No incoming transfer requests right now.</div>
+            </div>
+          </div>
+
+          <!-- Outgoing Demands I Requested -->
+          <div class="transfers-column">
+            <div class="column-header">
+              <div>
+                <h3>Outgoing Stock You Requested</h3>
+                <p class="text-muted text-sm">Stock on its way to save you from imminent stockout.</p>
+              </div>
+              <span id="outgoingCount" class="badge badge-alert">0</span>
+            </div>
+            <div id="outgoingTransfersList" class="transfers-list">
+              <div class="empty-state">No outgoing transfer orders active.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================================================== -->
+      <!-- TAB 5: SIMULATION & NETWORK BENEFIT IMPACT          -->
+      <!-- ==================================================== -->
+      <section id="tab-simulation" class="tab-view">
+        <div class="simulation-dashboard">
+          <div class="section-header">
+            <div>
+              <h2>Collaborative Pooling vs Independent Stores</h2>
+              <p class="section-desc">Proof that neighborhood inventory pooling beats isolated inventory management on
+                cost and availability.</p>
+            </div>
+          </div>
+
+          <!-- Comparison Cards Grid -->
+          <div class="comparison-grid">
+            <div class="comparison-card metric-primary">
+              <div class="metric-title">Stockout Fill Rate</div>
+              <div class="metric-value text-success">96.8%</div>
+              <div class="metric-comparison">
+                <span class="metric-baseline">Solo Store: 78.4%</span>
+                <span class="metric-gain">+18.4% improvement</span>
+              </div>
+              <p class="text-sm text-muted mt-2">Customers get what they need 97 times out of 100 without losing sales
+                to distant supermarkets.</p>
+            </div>
+
+            <div class="comparison-card metric-savings">
+              <div class="metric-title">Avoided Lost Sales Margin</div>
+              <div id="simSavedTotal" class="metric-value text-indigo">₹4,820</div>
+              <div class="metric-comparison">
+                <span class="metric-baseline">Solo Store: ₹0 saved</span>
+                <span class="metric-gain">Direct Kirana profits protected</span>
+              </div>
+              <p class="text-sm text-muted mt-2">Avoided lost retail margins after deducting ultra-low neighborhood
+                runner transport fees.</p>
+            </div>
+
+            <div class="comparison-card metric-waste">
+              <div class="metric-title">Perishable Waste Reduction</div>
+              <div class="metric-value text-success">-27.5%</div>
+              <div class="metric-comparison">
+                <span class="metric-baseline">Expired stock in bin</span>
+                <span class="metric-gain">Pooled before expiry</span>
+              </div>
+              <p class="text-sm text-muted mt-2">Milk, curd, and bread at risk of expiring at Store B are routed to
+                Store A where demand is peaking.</p>
+            </div>
+          </div>
+
+          <!-- Simulation Interactive Sandbox -->
+          <div class="sandbox-card mt-4">
+            <h3><i class="bx bx-slider-alt"></i> Live Scenario Sandbox</h3>
+            <p class="text-muted text-sm">Trigger real-time edge cases to see how StoreMithra responds:</p>
+
+            <div class="sandbox-actions-grid mt-3">
+              <div class="sandbox-action-box">
+                <h4>1. Forget to Update (Flow C)</h4>
+                <p class="text-sm text-muted">Simulate 3 days passing without the storekeeper touching inventory. Watch
+                  confidence drop from fresh to stale/unconfirmed and see the daily nudge trigger.</p>
+                <button id="btnSandboxDecay" class="btn btn-warning btn-sm mt-2"><i class="bx bx-time"></i> Simulate 3
+                  Days Inactivity</button>
+              </div>
+
+              <div class="sandbox-action-box">
+                <h4>2. Sudden Demand Spike (Flow A)</h4>
+                <p class="text-sm text-muted">Simulate multiple customer purchases causing inventory to drop below
+                  safety thresholds.</p>
+                <button id="btnSandboxSpike" class="btn btn-secondary btn-sm mt-2"><i class="bx bx-trending-up"></i>
+                  Simulate Sales Surge</button>
+              </div>
+
+              <div class="sandbox-action-box">
+                <h4>3. Full Network Reset</h4>
+                <p class="text-sm text-muted">Reset all 5 stores, products, historical sales, and transfer orders to
+                  clean starting demo state.</p>
+                <button id="btnSandboxReset" class="btn btn-ghost btn-sm mt-2"><i class="bx bx-reset"></i> Reset Entire
+                  Network</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Transfer Request Modal -->
+  <div id="transferModal" class="modal-overlay hidden">
+    <div class="modal-card modal-md">
+      <div class="modal-header modal-header-luxury">
+        <div class="modal-header-left">
+          <div class="modal-avatar-glow">
+            <i class="bx bx-transfer"></i>
+          </div>
+          <div>
+            <h3 id="modalTitle" style="color:#ffffff; margin:0;">Request Stock Transfer</h3>
+            <span class="modal-subtitle">Collaborative hyper-local inventory fulfillment</span>
+          </div>
+        </div>
+        <button id="btnCloseModal" class="btn-close-luxury" title="Close"><i class="bx bx-x"></i></button>
+      </div>
+      <div class="modal-body modal-body-scroll" id="modalBody">
+        <!-- Dynamically rendered -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Store Profile & Governance Modal (PostgreSQL Backed) -->
+  <div id="storeProfileModal" class="modal-overlay hidden">
+    <div class="modal-card modal-lg">
+      <div class="modal-header modal-header-luxury">
+        <div class="modal-header-left">
+          <div class="modal-avatar-glow">
+            <i class="bx bxs-store-alt"></i>
+          </div>
+          <div class="modal-title-group">
+            <div class="modal-badges-row">
+              <span class="badge-live-pg"><i class="bx bxl-postgresql"></i> PostgreSQL Live</span>
+              <span class="badge-trust-verified"><i class="bx bxs-badge-check"></i> Verified Partner</span>
+            </div>
+            <h3>Merchant Store Profile & Governance</h3>
+            <span class="modal-subtitle">Configure store identity, settlement UPI, and privacy pooling modes</span>
+          </div>
+        </div>
+        <button id="btnCloseProfileModal" class="btn-close-luxury" title="Close"><i class="bx bx-x"></i></button>
+      </div>
+
+      <div class="modal-body modal-body-scroll">
+        <!-- Compact 4-Metric Ribbon -->
+        <div class="profile-ribbon-grid">
+          <div class="ribbon-card ribbon-trust">
+            <div class="ribbon-icon"><i class="bx bxs-star"></i></div>
+            <div class="ribbon-text">
+              <span class="ribbon-val" id="profRepScore">95%</span>
+              <span class="ribbon-lbl">Trust Score</span>
+            </div>
+          </div>
+          <div class="ribbon-card ribbon-inventory">
+            <div class="ribbon-icon"><i class="bx bx-package"></i></div>
+            <div class="ribbon-text">
+              <span class="ribbon-val"><span id="profTotalUnits">340</span> units</span>
+              <span class="ribbon-lbl"><span id="profTotalSkus">25</span> SKUs Tracked</span>
+            </div>
+          </div>
+          <div class="ribbon-card ribbon-confidence">
+            <div class="ribbon-icon"><i class="bx bx-check-shield"></i></div>
+            <div class="ribbon-text">
+              <span class="ribbon-val" id="profAvgConfidence">98%</span>
+              <span class="ribbon-lbl">Stock Confidence</span>
+            </div>
+          </div>
+          <div class="ribbon-card ribbon-savings">
+            <div class="ribbon-icon"><i class="bx bx-rupee"></i></div>
+            <div class="ribbon-text">
+              <span class="ribbon-val" id="profTotalSaved">₹240</span>
+              <span class="ribbon-lbl"><span id="profTransfersCount">1</span> Transfers Done</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Two-Column Profile & Governance Form -->
+        <form id="storeProfileForm" class="profile-form-luxury">
+          <div class="profile-columns-layout">
+
+            <!-- Column 1: Merchant & Store Identity -->
+            <div class="profile-col-card">
+              <div class="col-card-header">
+                <i class="bx bx-user-pin col-icon"></i>
+                <div>
+                  <h4>Storefront Identity</h4>
+                  <span class="col-sub">Merchant owner & business details</span>
+                </div>
+              </div>
+
+              <div class="form-group-lux">
+                <label for="profOwnerName">Store Owner Name</label>
+                <div class="input-with-icon">
+                  <i class="bx bx-user input-icon"></i>
+                  <input type="text" id="profOwnerName" class="form-control-lux" placeholder="e.g. Ramesh Gupta"
+                    required>
+                </div>
+              </div>
+
+              <div class="form-group-lux">
+                <label for="profStoreName">Registered Store Name</label>
+                <div class="input-with-icon">
+                  <i class="bx bx-store-alt input-icon"></i>
+                  <input type="text" id="profStoreName" class="form-control-lux"
+                    placeholder="e.g. Sri Lakshmi Provision & Kirana" required>
+                </div>
+              </div>
+
+              <div class="form-group-lux">
+                <label for="profPhone">Mobile Contact Number (Login ID)</label>
+                <div class="input-with-icon">
+                  <i class="bx bx-phone-call input-icon"></i>
+                  <input type="text" id="profPhone" class="form-control-lux" placeholder="+91 98450 11221" required>
+                </div>
+              </div>
+
+              <div class="form-group-lux">
+                <label for="profAddress">Store Address & Neighborhood</label>
+                <div class="input-with-icon">
+                  <i class="bx bx-map-pin input-icon"></i>
+                  <input type="text" id="profAddress" class="form-control-lux"
+                    placeholder="#142, 100 Feet Road, Indiranagar" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- Column 2: Governance, UPI & Security -->
+            <div class="profile-col-card">
+              <div class="col-card-header">
+                <i class="bx bx-shield-quarter col-icon col-icon-pink"></i>
+                <div>
+                  <h4>Governance & Settlements</h4>
+                  <span class="col-sub">Payment routing & sharing privacy</span>
+                </div>
+              </div>
+
+              <div class="form-group-lux">
+                <label for="profUpiId">Settlement UPI ID</label>
+                <div class="input-with-icon">
+                  <i class="bx bx-credit-card input-icon"></i>
+                  <input type="text" id="profUpiId" class="form-control-lux" placeholder="merchant@upi" required>
+                </div>
+                <small class="lux-hint"><i class="bx bx-check-circle text-success"></i> Auto-settles transfer payouts
+                  directly into bank.</small>
+              </div>
+
+              <div class="form-group-lux">
+                <label for="profSharingMode">Collaborative Pooling Mode</label>
+                <div class="input-with-icon">
+                  <i class="bx bx-share-alt input-icon"></i>
+                  <select id="profSharingMode" class="form-control-lux">
+                    <option value="full">Full Pool (Exact units shared with network)</option>
+                    <option value="limited">Limited Share (Bracketed 1-5, 5-10 units)</option>
+                    <option value="privacy_preserving">Privacy Mode (Binary Yes / No only)</option>
+                  </select>
+                </div>
+                <small class="lux-hint">Controls how neighboring kirana stores discover your surplus stock.</small>
+              </div>
+
+              <div class="form-group-lux">
+                <label for="profPin">Security PIN (4-Digit Login)</label>
+                <div class="input-with-icon">
+                  <i class="bx bx-lock-alt input-icon"></i>
+                  <input type="password" id="profPin" class="form-control-lux" maxlength="6"
+                    placeholder="Leave blank to keep current (1234)">
+                </div>
+                <small class="lux-hint">Used to authenticate store switch & approvals.</small>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="modal-footer-lux">
+            <button type="button" class="btn-lux-ghost" onclick="Auth.logout()" title="Revoke session and sign out"
+              style="color: var(--danger); border-color: var(--danger-border); margin-right: auto;">
+              <i class="bx bx-log-out"></i> Logout
+            </button>
+            <button type="button" class="btn-lux-ghost" onclick="Auth.closeProfileModal()">
+              <i class="bx bx-x"></i> Cancel
+            </button>
+            <button type="submit" id="btnSaveProfile" class="btn-lux-primary">
+              <i class="bx bx-check-double"></i> Save Profile & Governance
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Store Login & Fast-Switch Modal (PostgreSQL Backed) -->
+  <div id="storeLoginModal" class="modal-overlay hidden">
+    <div class="modal-card modal-md">
+      <div class="modal-header modal-header-luxury">
+        <div class="modal-header-left">
+          <div class="modal-avatar-glow">
+            <i class="bx bx-log-in-circle"></i>
+          </div>
+          <div class="modal-title-group">
+            <div class="modal-badges-row">
+              <span class="badge-live-pg"><i class="bx bxl-postgresql"></i> PostgreSQL Auth</span>
+            </div>
+            <h3>Store Merchant Login</h3>
+            <span class="modal-subtitle">Log in with phone & PIN or fast-switch demo store</span>
+          </div>
+        </div>
+        <button id="btnCloseLoginModal" class="btn-close-luxury" title="Close"><i class="bx bx-x"></i></button>
+      </div>
+      <div class="modal-body">
+        <!-- Phone & PIN Form -->
+        <form id="storeLoginForm" class="login-form-luxury">
+          <div class="form-group-lux">
+            <label for="loginPhone">Registered Mobile Number</label>
+            <div class="input-with-icon">
+              <i class="bx bx-phone-call input-icon"></i>
+              <input type="text" id="loginPhone" class="form-control-lux"
+                placeholder="e.g. +91 98450 11221 or 9845011221" required>
+            </div>
+          </div>
+          <div class="form-group-lux">
+            <label for="loginPin">4-Digit Security PIN (Demo: 1234)</label>
+            <div class="input-with-icon">
+              <i class="bx bx-lock-alt input-icon"></i>
+              <input type="password" id="loginPin" class="form-control-lux" placeholder="1234" maxlength="6" required>
+            </div>
+          </div>
+          <button type="submit" id="btnLoginSubmit" class="btn-lux-primary btn-block mt-2">
+            <i class="bx bx-log-in"></i> Authenticate & Open Store
+          </button>
+        </form>
+
+        <div class="divider-text">
+          <span>OR 1-CLICK FAST SWITCH DEMO STORE</span>
+        </div>
+
+        <!-- 1-Click Fast Switch List -->
+        <div id="demoStoresQuickList" class="quick-stores-list">
+          <!-- Dynamically populated -->
+        </div>
+
+        <div
+          style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.25rem; padding-top: 0.85rem; border-top: 1px solid var(--border-subtle); font-size: 0.85rem;">
+          <a href="/login"
+            style="color: var(--purple-primary); text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem;">
+            <i class="bx bx-window-open"></i> Full Login Page
+          </a>
+          <a href="/register"
+            style="color: var(--pink-primary); text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem;">
+            <i class="bx bx-user-plus"></i> + Register New Store
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <!-- Modular Vanilla JavaScript -->
+  <script src="public/js/auth.js"></script>
+  <script src="public/js/app.js"></script>
+  <script src="public/js/map.js"></script>
+  <script src="public/js/inventoryView.js"></script>
+  <script src="public/js/risksView.js"></script>
+  <script src="public/js/transfersView.js"></script>
+  <script src="public/js/simulationView.js"></script>
+</body>
+
+</html>

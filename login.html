@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Merchant Login — StoreMithra Inventory Pooling</title>
+  <meta name="description" content="Log into your StoreMithra Kirana merchant portal to access collaborative pooling, AI demand forecasts, and transfer settlements.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Boxicons CSS Icons -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+  <!-- Design System Stylesheet -->
+  <link rel="stylesheet" href="public/css/style.css?v=3.2">
+</head>
+
+<body class="auth-body">
+  <!-- Top Navigation Header -->
+  <header class="auth-nav">
+    <a href="/" class="brand">
+      <div class="logo-icon"><i class="bx bxs-store-alt"></i></div>
+      <span class="brand-title">StoreMithra</span>
+    </a>
+    <div class="nav-links">
+      <a href="/" class="btn btn-ghost btn-sm" title="View Site Overview & How StoreMithra Works">
+        <i class="bx bx-home-alt"></i> Site Overview
+      </a>
+      <a href="/register" class="btn btn-secondary btn-sm" title="Register New Kirana Store">
+        <i class="bx bx-user-plus"></i> Register Store
+      </a>
+    </div>
+  </header>
+
+  <!-- Centered Login Container -->
+  <main class="auth-container">
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <div class="auth-badge-icon">
+          <i class="bx bxs-lock-alt"></i>
+        </div>
+        <h1 class="auth-card-title">Merchant Login</h1>
+        <p class="auth-card-subtitle">
+          Sign into your Kirana store portal backed by real-time PostgreSQL 15 database.
+        </p>
+      </div>
+
+      <!-- Alert Notification Banner -->
+      <div id="authAlert" class="auth-alert-box">
+        <i class="bx bx-info-circle" id="alertIcon"></i>
+        <span id="alertMsg">Message goes here</span>
+      </div>
+
+      <!-- Login Form -->
+      <form id="merchantLoginForm" autocomplete="off">
+        <div class="auth-input-group">
+          <label for="loginPhone">
+            <i class="bx bx-phone"></i> Registered Mobile Number
+          </label>
+          <div class="auth-input-wrapper">
+            <i class="bx bx-mobile-alt auth-input-icon"></i>
+            <input type="tel" id="loginPhone" name="phone" placeholder="e.g. 98450 11221" required autofocus />
+          </div>
+        </div>
+
+        <div class="auth-input-group">
+          <label for="loginPin">
+            <i class="bx bx-shield-quarter"></i> 4-Digit Security PIN
+          </label>
+          <div class="auth-input-wrapper">
+            <i class="bx bx-key auth-input-icon"></i>
+            <input type="password" id="loginPin" name="pin" placeholder="Default is 1234" maxlength="6" value="1234" required />
+          </div>
+        </div>
+
+        <button type="submit" id="btnLoginSubmit" class="btn-auth-submit">
+          <i class="bx bx-log-in"></i> Authenticate & Open Store
+        </button>
+      </form>
+
+      <!-- Fast Switch Demo Profiles -->
+      <div class="auth-divider">
+        <span>OR 1-CLICK DEMO STORE SWITCH</span>
+      </div>
+
+      <div class="auth-demo-picker">
+        <div class="auth-demo-title">
+          <span>Active Kirana Network Stores</span>
+          <span class="badge-mini"><i class="bx bx-data"></i> PostgreSQL</span>
+        </div>
+        <div class="auth-demo-list" id="demoAccountsList">
+          <div class="auth-demo-pill" onclick="quickFillAndLogin('STORE_1', '9845011221', '1234')">
+            <div class="auth-demo-pill-info">
+              <span class="auth-demo-pill-name">Sri Lakshmi Kirana</span>
+              <span class="auth-demo-pill-sub"><i class="bx bx-user"></i> Ramesh Gupta &bull; 98450 11221</span>
+            </div>
+            <span class="auth-demo-pill-action"><i class="bx bx-right-arrow-alt"></i> Login</span>
+          </div>
+
+          <div class="auth-demo-pill" onclick="quickFillAndLogin('STORE_2', '9845122332', '1234')">
+            <div class="auth-demo-pill-info">
+              <span class="auth-demo-pill-name">Annapurna Super Bazaar</span>
+              <span class="auth-demo-pill-sub"><i class="bx bx-user"></i> Suresh Kumar &bull; 98451 22332</span>
+            </div>
+            <span class="auth-demo-pill-action"><i class="bx bx-right-arrow-alt"></i> Login</span>
+          </div>
+
+          <div class="auth-demo-pill" onclick="quickFillAndLogin('STORE_3', '9845233443', '1234')">
+            <div class="auth-demo-pill-info">
+              <span class="auth-demo-pill-name">Green Basket Daily Mart</span>
+              <span class="auth-demo-pill-sub"><i class="bx bx-user"></i> Kavitha Reddy &bull; 98452 33443</span>
+            </div>
+            <span class="auth-demo-pill-action"><i class="bx bx-right-arrow-alt"></i> Login</span>
+          </div>
+
+          <div class="auth-demo-pill" onclick="quickFillAndLogin('STORE_4', '9845344554', '1234')">
+            <div class="auth-demo-pill-info">
+              <span class="auth-demo-pill-name">Bhartiya Kirana</span>
+              <span class="auth-demo-pill-sub"><i class="bx bx-user"></i> Mahesh Sharma &bull; 98453 44554</span>
+            </div>
+            <span class="auth-demo-pill-action"><i class="bx bx-right-arrow-alt"></i> Login</span>
+          </div>
+
+          <div class="auth-demo-pill" onclick="quickFillAndLogin('STORE_5', '9845455665', '1234')">
+            <div class="auth-demo-pill-info">
+              <span class="auth-demo-pill-name">City Corner Mini Mart</span>
+              <span class="auth-demo-pill-sub"><i class="bx bx-user"></i> Abdul Farooq &bull; 98454 55665</span>
+            </div>
+            <span class="auth-demo-pill-action"><i class="bx bx-right-arrow-alt"></i> Login</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="auth-footer-links">
+        <p>New Kirana Merchant? <a href="/register">Register your store profile <i class="bx bx-right-arrow-alt"></i></a></p>
+        <p style="margin-top: 0.5rem;"><a href="/" style="color: var(--text-muted); font-weight: normal;"><i class="bx bx-home-alt"></i> Return to Site Overview & How It Works</a></p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const form = document.getElementById('merchantLoginForm');
+    const phoneInput = document.getElementById('loginPhone');
+    const pinInput = document.getElementById('loginPin');
+    const submitBtn = document.getElementById('btnLoginSubmit');
+    const alertBox = document.getElementById('authAlert');
+    const alertMsg = document.getElementById('alertMsg');
+    const alertIcon = document.getElementById('alertIcon');
+
+    function showAlert(message, type = 'error') {
+      alertBox.className = 'auth-alert-box ' + (type === 'success' ? 'auth-alert-success' : 'auth-alert-error');
+      alertIcon.className = type === 'success' ? 'bx bx-check-circle' : 'bx bx-error-circle';
+      alertMsg.textContent = message;
+      alertBox.style.display = 'flex';
+    }
+
+    function hideAlert() {
+      alertBox.style.display = 'none';
+    }
+
+    // Auto phone format helper
+    phoneInput.addEventListener('input', (e) => {
+      let val = e.target.value.replace(/\D/g, '');
+      if (val.length > 10) val = val.slice(0, 10);
+      if (val.length > 5) {
+        e.target.value = val.slice(0, 5) + ' ' + val.slice(5);
+      } else {
+        e.target.value = val;
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideAlert();
+
+      const phone = phoneInput.value.trim();
+      const pin = pinInput.value.trim();
+
+      if (!phone) {
+        showAlert('Please enter your 10-digit mobile number');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> Authenticating...";
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone, pin })
+        });
+        const data = await res.json();
+
+        if (data.success && data.store) {
+          localStorage.setItem('storemithra_token', data.token);
+          localStorage.setItem('storemithra_active_store', JSON.stringify(data.store));
+          showAlert(`Welcome back, ${data.store.owner_name}! Opening ${data.store.name}...`, 'success');
+          setTimeout(() => {
+            window.location.href = '/dashboard';
+          }, 750);
+        } else {
+          showAlert(data.error || 'Authentication failed. Please verify phone number and PIN.');
+        }
+      } catch (err) {
+        console.error('Login request failed:', err);
+        showAlert('Network error connecting to StoreMithra server.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "<i class='bx bx-log-in'></i> Authenticate & Open Store";
+      }
+    });
+
+    async function quickFillAndLogin(storeId, phone, pin) {
+      phoneInput.value = phone.slice(0, 5) + ' ' + phone.slice(5);
+      pinInput.value = pin;
+      hideAlert();
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> Fast Switching...";
+
+      try {
+        const res = await fetch('/api/auth/demo-switch', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ storeId })
+        });
+        const data = await res.json();
+        if (data.success && data.store) {
+          localStorage.setItem('storemithra_token', data.token);
+          localStorage.setItem('storemithra_active_store', JSON.stringify(data.store));
+          showAlert(`Switched to ${data.store.name}! Redirecting to dashboard...`, 'success');
+          setTimeout(() => {
+            window.location.href = '/dashboard';
+          }, 600);
+        } else {
+          showAlert(data.error || 'Could not switch store.');
+        }
+      } catch (err) {
+        showAlert('Failed to connect to backend.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "<i class='bx bx-log-in'></i> Authenticate & Open Store";
+      }
+    }
+  </script>
+</body>
+
+</html>

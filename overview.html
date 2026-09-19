@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StoreMithra — Multi-Store Kirana Inventory Pooling & AI Demand Forecasting</title>
+  <meta name="description" content="LocalStock collaborative inventory pooling network for Kirana stores. Prevent stockouts, forecast demand with AI, share surplus inventory within 1.5km, and settle instantly with UPI.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Boxicons CSS Icons -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+  <!-- Custom Design System Stylesheet -->
+  <link rel="stylesheet" href="public/css/style.css?v=3.3">
+</head>
+
+<body class="overview-body">
+  <!-- Top Navigation Bar -->
+  <header class="overview-navbar">
+    <a href="/" class="brand">
+      <div class="logo-icon"><i class="bx bxs-store-alt"></i></div>
+      <div class="brand-text">
+        <h1 style="font-size: 1.3rem; margin: 0; line-height: 1;">StoreMithra</h1>
+        <span class="tagline" style="font-size: 0.72rem; color: var(--text-muted);">Collaborative Kirana Pooling & AI Forecasting</span>
+      </div>
+    </a>
+
+    <nav class="overview-nav-links">
+      <a href="#how-it-works"><i class="bx bx-cog"></i> How It Works</a>
+      <a href="#features"><i class="bx bx-layer"></i> Platform Features</a>
+      <a href="#network"><i class="bx bx-map-pin"></i> Bangalore Network</a>
+      <a href="#comparison"><i class="bx bx-check-shield"></i> Why Pool?</a>
+    </nav>
+
+    <div class="overview-nav-actions">
+      <a href="/login" class="btn btn-ghost btn-sm">
+        <i class="bx bx-log-in"></i> Merchant Login
+      </a>
+      <a href="/register" class="btn btn-secondary btn-sm">
+        <i class="bx bx-user-plus"></i> + Register Store
+      </a>
+      <a href="/dashboard" class="btn-hero-primary" style="padding: 0.55rem 1.15rem; font-size: 0.88rem;">
+        <i class="bx bx-grid-alt"></i> Live Dashboard
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="overview-hero">
+    <div class="hero-pill-badge">
+      <span class="dot"></span>
+      <span>PostgreSQL 15 Live Engine</span> &bull; 
+      <span>5 Bangalore Kiranas Connected</span> &bull; 
+      <span style="color: var(--pink-primary);"><i class="bx bx-check-double"></i> 0% Stockout Guarantee</span>
+    </div>
+
+    <h1>
+      The Collaborative Inventory & <br>
+      <span class="gradient-text">AI Demand Forecasting Network</span> <br>
+      for Kirana Stores
+    </h1>
+
+    <p class="hero-subtitle">
+      Never lose another customer to out-of-stock items. StoreMithra unites neighborhood Kirana stores into an intelligent, cooperative stock pool within 1.5km. Automate emergency neighbor transfers, predict depletion with AI, and settle payouts instantly via UPI.
+    </p>
+
+    <div class="hero-cta-group">
+      <a href="/dashboard" class="btn-hero-primary">
+        <i class="bx bx-rocket"></i> Open Live Merchant Dashboard
+      </a>
+      <a href="/register" class="btn-hero-secondary">
+        <i class="bx bx-store-alt"></i> Register Your Kirana Store
+      </a>
+      <a href="/login" class="btn btn-ghost btn-sm" style="font-size: 0.95rem; font-weight: 700; color: var(--purple-dark);">
+        <i class="bx bx-key"></i> Merchant Login <i class="bx bx-right-arrow-alt"></i>
+      </a>
+    </div>
+
+    <!-- Live Performance Metrics Ribbon -->
+    <div class="hero-metric-ribbon">
+      <div class="metric-stat-card">
+        <div class="metric-stat-val">₹500+</div>
+        <div class="metric-stat-label">Daily Recovered Revenue / Store</div>
+      </div>
+      <div class="metric-stat-card">
+        <div class="metric-stat-val">&lt; 15 min</div>
+        <div class="metric-stat-label">Neighbor Pool Transfer Time</div>
+      </div>
+      <div class="metric-stat-card">
+        <div class="metric-stat-val">98%</div>
+        <div class="metric-stat-label">Real-Time Stock Confidence</div>
+      </div>
+      <div class="metric-stat-card">
+        <div class="metric-stat-val">100%</div>
+        <div class="metric-stat-label">Customer Retention on Staples</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works (The 3 Core Pillars) -->
+  <section id="how-it-works" class="overview-section">
+    <div class="section-header">
+      <span class="section-tag"><i class="bx bx-bulb"></i> The Cooperative Architecture</span>
+      <h2 class="section-title">How StoreMithra Solves the Kirana Stockout Crisis</h2>
+      <p class="section-desc">
+        Small retail merchants in India lose up to 15% of daily revenue because of supplier delivery delays and limited backroom shelf space. StoreMithra transforms isolated Kiranas into a resilient local network.
+      </p>
+    </div>
+
+    <div class="pillars-grid">
+      <!-- Pillar 1 -->
+      <div class="pillar-card">
+        <div class="pillar-card-icon">
+          <i class="bx bx-share-alt"></i>
+        </div>
+        <h3 class="pillar-card-title">1. Hyperlocal Stock Pooling</h3>
+        <p class="pillar-card-text">
+          Neighbor stores within 400m to 1200m share buffer inventories. If your store runs low on high-demand essentials (like Aashirvaad Atta or Fortune Oil), stock is dispatched from a neighboring partner store with surplus in under 15 minutes.
+        </p>
+        <ul class="pillar-features-list">
+          <li><i class="bx bx-check"></i> 1.5km geofenced safety radius</li>
+          <li><i class="bx bx-check"></i> Full privacy: no financial ledger exposure</li>
+          <li><i class="bx bx-check"></i> Perishable transit distance caps (1200m)</li>
+        </ul>
+      </div>
+
+      <!-- Pillar 2 -->
+      <div class="pillar-card">
+        <div class="pillar-card-icon">
+          <i class="bx bx-line-chart"></i>
+        </div>
+        <h3 class="pillar-card-title">2. Censored Demand AI Forecasting</h3>
+        <p class="pillar-card-text">
+          Traditional POS systems severely under-forecast because they only count transactions—recording 0 sales when a shelf is empty. StoreMithra’s 14-day rolling average model adjusts for stockout censorship and supplier lead times.
+        </p>
+        <ul class="pillar-features-list">
+          <li><i class="bx bx-check"></i> Dynamic confidence decay (e.g. 5-day unverified = 45%)</li>
+          <li><i class="bx bx-check"></i> Predicts depletion 2 to 3 days in advance</li>
+          <li><i class="bx bx-check"></i> Barcode scan & quick sale confidence reset</li>
+        </ul>
+      </div>
+
+      <!-- Pillar 3 -->
+      <div class="pillar-card">
+        <div class="pillar-card-icon">
+          <i class="bx bx-credit-card"></i>
+        </div>
+        <h3 class="pillar-card-title">3. Instant UPI Money Math & Trust</h3>
+        <p class="pillar-card-text">
+          Every decision compares money math: Avoided lost sales vs supplier delay vs neighbor transfer fee. Fulfillments route automatically through merchant UPI IDs with transparent settlement ledgering and reputation scoring.
+        </p>
+        <ul class="pillar-features-list">
+          <li><i class="bx bx-check"></i> Instant merchant-to-merchant UPI routing</li>
+          <li><i class="bx bx-check"></i> Transparent transfer fee economics (₹25 - ₹40)</li>
+          <li><i class="bx bx-check"></i> Fulfiller trust score increases with on-time deliveries</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Platform Features & Showcase -->
+  <section id="features" class="overview-section">
+    <div class="section-header">
+      <span class="section-tag"><i class="bx bx-desktop"></i> Comprehensive Feature Suite</span>
+      <h2 class="section-title">Built Ground-Up for Indian Kirana Realities</h2>
+      <p class="section-desc">
+        Engineered with a pure white background, dark purple and pink luxury design system, official Boxicons, and instant PostgreSQL 15 transactional consistency.
+      </p>
+    </div>
+
+    <div class="feature-showcase-grid">
+      <!-- Feature 1: Decision Queue -->
+      <div class="showcase-card">
+        <div class="showcase-header">
+          <div class="showcase-icon"><i class="bx bx-bell"></i></div>
+          <div>
+            <h3 class="showcase-title">Immediate Decision Queue</h3>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Flow C: "Nudge, Don't Nag"</span>
+          </div>
+        </div>
+        <p class="showcase-body">
+          The decision engine continuously runs in the background. When an item is at risk, it calculates the exact net benefit in Indian Rupees (₹) and recommends the optimal action: <em>Peer Transfer</em>, <em>Supplier Reorder</em>, or <em>Product Substitution</em>.
+        </p>
+        <div class="showcase-demo-box">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <strong style="color: var(--purple-dark); font-size: 0.88rem;">Aashirvaad Shudh Chakki Atta (5kg)</strong>
+            <span class="badge badge-alert" style="font-size: 0.72rem;">92% Stockout Risk</span>
+          </div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
+            Avoid Lost Sales: <strong style="color: var(--success);">₹533</strong> &bull; Transfer Fee: ₹31 &bull; 
+            <strong>Net Benefit: <span style="color: var(--pink-primary);">+₹501.55</span></strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 2: Nearby Store Network -->
+      <div class="showcase-card">
+        <div class="showcase-header">
+          <div class="showcase-icon"><i class="bx bx-map-alt"></i></div>
+          <div>
+            <h3 class="showcase-title">Geofenced Neighbor Network</h3>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Haversine Geolocation Engine</span>
+          </div>
+        </div>
+        <p class="showcase-body">
+          Interactive Leaflet map displaying neighbor stores across Indiranagar, HAL 2nd Stage, Domlur, and Koramangala. Real-time proximity radar calculates travel time and limits perishable stock transfers to 1200 meters.
+        </p>
+        <div class="showcase-demo-box">
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.84rem;">
+            <span><i class="bx bxs-store text-pink"></i> Sri Lakshmi &rarr; Annapurna Super Bazaar</span>
+            <strong style="color: var(--purple-dark);">427 meters (5 min)</strong>
+          </div>
+          <div style="margin-top: 0.35rem; font-size: 0.78rem; color: var(--text-muted);">
+            Active Pool Status: <span style="color: var(--success); font-weight: 700;">Optimal Sharing Enabled</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 3: Dynamic Stock & Barcode Scanner -->
+      <div class="showcase-card">
+        <div class="showcase-header">
+          <div class="showcase-icon"><i class="bx bx-barcode"></i></div>
+          <div>
+            <h3 class="showcase-title">Dynamic Confidence & Barcode Audits</h3>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Decay Modeling & Instant Sync</span>
+          </div>
+        </div>
+        <p class="showcase-body">
+          Inventory data goes stale if not updated. Our confidence decay model gently nudges merchants to audit fast-moving SKUs. One-tap barcode simulation or quick sales instantly restore stock confidence to 100%.
+        </p>
+        <div class="showcase-demo-box">
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.84rem;">
+            <span><i class="bx bx-package"></i> Nandini Toned Milk (500ml)</span>
+            <span class="badge badge-indigo" style="font-size: 0.72rem;">Confidence: 98%</span>
+          </div>
+          <div style="margin-top: 0.35rem; font-size: 0.78rem; color: var(--text-muted);">
+            Expiry Monitoring: <span style="color: var(--danger); font-weight: 600;">Alert 2 days prior to spoilage</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 4: Transfers Hub & Settlements -->
+      <div class="showcase-card">
+        <div class="showcase-header">
+          <div class="showcase-icon"><i class="bx bx-transfer-alt"></i></div>
+          <div>
+            <h3 class="showcase-title">Transfers Hub & Payouts</h3>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Complete Lifecycle Management</span>
+          </div>
+        </div>
+        <p class="showcase-body">
+          Track inbound and outbound stock transfers in real time. Supports <em>Requested</em>, <em>In-Transit</em>, and <em>Completed</em> states. Complete transfers automatically credit the supplier store's UPI ID and update PostgreSQL records.
+        </p>
+        <div class="showcase-demo-box">
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.84rem;">
+            <span><i class="bx bx-check-circle text-success"></i> Transfer #TR-102 Completed</span>
+            <strong style="color: var(--success);">₹380 Paid via UPI</strong>
+          </div>
+          <div style="margin-top: 0.35rem; font-size: 0.78rem; color: var(--text-muted);">
+            Fulfillment Score: <span style="color: var(--purple-dark); font-weight: 700;">+2% Reputation Gain</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Solo Kirana vs StoreMithra Comparison Table -->
+  <section id="comparison" class="overview-section">
+    <div class="section-header">
+      <span class="section-tag"><i class="bx bx-bar-chart-alt"></i> Financial Impact</span>
+      <h2 class="section-title">Isolated Solo Kirana vs StoreMithra Network</h2>
+      <p class="section-desc">
+        See how pooling transforms shopkeeper margins, working capital efficiency, and customer satisfaction.
+      </p>
+    </div>
+
+    <div class="comparison-container">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Operational Metric</th>
+            <th>Traditional Solo Kirana</th>
+            <th class="col-highlight"><i class="bx bxs-store-alt"></i> StoreMithra Cooperative</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Stockout Recovery Time</strong></td>
+            <td>3 to 4 days (Supplier delivery cycle)</td>
+            <td class="col-highlight"><strong>&lt; 15 minutes (Neighbor peer transfer)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Lost Sales on Out-of-Stock Items</strong></td>
+            <td>100% loss (Customer visits competitor or quick-commerce)</td>
+            <td class="col-highlight"><strong>0% loss (Immediate substitution or neighbor pool)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Working Capital Locked in Safety Stock</strong></td>
+            <td>₹45,000 to ₹70,000 excess inventory</td>
+            <td class="col-highlight"><strong>Shared neighborhood buffer saves ~35% capital</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Perishable Spoilage & Waste (Milk, Dairy)</strong></td>
+            <td>Full write-off if unsold before expiry</td>
+            <td class="col-highlight"><strong>Proactive discount transfers to high-velocity shops</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Demand Forecasting Precision</strong></td>
+            <td>Subjective guesswork / intuition</td>
+            <td class="col-highlight"><strong>Censored Demand 14-day rolling average AI model</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Settlement Method</strong></td>
+            <td>Messy paper khata / cash ledger</td>
+            <td class="col-highlight"><strong>Automated UPI settlement with instant bank credit</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Bangalore Kirana Network Roster -->
+  <section id="network" class="overview-section">
+    <div class="section-header">
+      <span class="section-tag"><i class="bx bx-map-pin"></i> Connected Network</span>
+      <h2 class="section-title">Active Bangalore Partner Kiranas</h2>
+      <p class="section-desc">
+        Five prominent neighborhood stores currently active on the StoreMithra PostgreSQL 15 pooling grid in Bangalore, Karnataka.
+      </p>
+    </div>
+
+    <div class="roster-grid">
+      <!-- Store 1 -->
+      <div class="roster-card">
+        <div class="roster-header">
+          <span class="roster-name">Sri Lakshmi Kirana</span>
+          <span class="badge-mini"><i class="bx bxs-star text-warning"></i> 95% Trust</span>
+        </div>
+        <div class="roster-meta"><i class="bx bx-user"></i> Ramesh Gupta &bull; Indiranagar</div>
+        <div class="roster-meta"><i class="bx bx-phone"></i> +91 98450 11221 &bull; PIN: 1234</div>
+        <div class="roster-meta"><i class="bx bx-credit-card"></i> UPI: srilakshmi.kirana@oksbi</div>
+      </div>
+
+      <!-- Store 2 -->
+      <div class="roster-card">
+        <div class="roster-header">
+          <span class="roster-name">Annapurna Super Bazaar</span>
+          <span class="badge-mini"><i class="bx bxs-star text-warning"></i> 90% Trust</span>
+        </div>
+        <div class="roster-meta"><i class="bx bx-user"></i> Suresh Kumar &bull; HAL 2nd Stage</div>
+        <div class="roster-meta"><i class="bx bx-phone"></i> +91 98451 22332 &bull; PIN: 1234</div>
+        <div class="roster-meta"><i class="bx bx-credit-card"></i> UPI: annapurna@okicici</div>
+      </div>
+
+      <!-- Store 3 -->
+      <div class="roster-card">
+        <div class="roster-header">
+          <span class="roster-name">Green Basket Daily Mart</span>
+          <span class="badge-mini"><i class="bx bxs-star text-warning"></i> 88% Trust</span>
+        </div>
+        <div class="roster-meta"><i class="bx bx-user"></i> Kavitha Reddy &bull; Domlur Layout</div>
+        <div class="roster-meta"><i class="bx bx-phone"></i> +91 98452 33443 &bull; PIN: 1234</div>
+        <div class="roster-meta"><i class="bx bx-credit-card"></i> UPI: greenbasket@okhdfc</div>
+      </div>
+
+      <!-- Store 4 -->
+      <div class="roster-card">
+        <div class="roster-header">
+          <span class="roster-name">Bhartiya Kirana</span>
+          <span class="badge-mini"><i class="bx bxs-star text-warning"></i> 92% Trust</span>
+        </div>
+        <div class="roster-meta"><i class="bx bx-user"></i> Mahesh Sharma &bull; Indiranagar 100ft Rd</div>
+        <div class="roster-meta"><i class="bx bx-phone"></i> +91 98453 44554 &bull; PIN: 1234</div>
+        <div class="roster-meta"><i class="bx bx-credit-card"></i> UPI: bhartiyakirana@oksbi</div>
+      </div>
+
+      <!-- Store 5 -->
+      <div class="roster-card">
+        <div class="roster-header">
+          <span class="roster-name">City Corner Mini Mart</span>
+          <span class="badge-mini"><i class="bx bxs-star text-warning"></i> 85% Trust</span>
+        </div>
+        <div class="roster-meta"><i class="bx bx-user"></i> Abdul Farooq &bull; Old Airport Road</div>
+        <div class="roster-meta"><i class="bx bx-phone"></i> +91 98454 55665 &bull; PIN: 1234</div>
+        <div class="roster-meta"><i class="bx bx-credit-card"></i> UPI: citycorner@okaxis</div>
+      </div>
+
+      <!-- Join Card -->
+      <div class="roster-card" style="border-style: dashed; background: var(--bg-secondary); justify-content: center; align-items: center; text-align: center;">
+        <div style="font-size: 1.5rem; color: var(--pink-primary);"><i class="bx bx-plus-circle"></i></div>
+        <strong style="color: var(--purple-dark);">Your Kirana Store Here</strong>
+        <p style="font-size: 0.78rem; color: var(--text-muted);">Register your store in 60 seconds and start pooling today.</p>
+        <a href="/register" class="btn btn-secondary btn-sm" style="margin-top: 0.4rem;">
+          <i class="bx bx-user-plus"></i> Register Now
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Big Call to Action Banner -->
+  <section class="overview-section" style="padding-top: 2rem; padding-bottom: 2rem;">
+    <div class="overview-cta-box">
+      <h2>Ready to Eliminate Kirana Stockouts?</h2>
+      <p>
+        Join hundreds of merchants in Bangalore. Connect your inventory to the collaborative pool, gain AI forecasting insights, and safeguard every loyal customer.
+      </p>
+      <div class="cta-buttons-row">
+        <a href="/dashboard" class="btn-cta-white">
+          <i class="bx bx-grid-alt"></i> Open Live Merchant Dashboard
+        </a>
+        <a href="/register" class="btn-cta-outline">
+          <i class="bx bx-user-plus"></i> Register New Kirana Store
+        </a>
+        <a href="/login" class="btn-cta-outline">
+          <i class="bx bx-key"></i> Merchant Login
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="overview-footer">
+    <div class="footer-inner">
+      <div class="footer-brand-meta">
+        <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 800; color: var(--purple-dark); font-size: 1.1rem; margin-bottom: 0.35rem;">
+          <i class="bx bxs-store-alt text-pink"></i> StoreMithra Platform
+        </div>
+        <div>LocalStock Collaborative Inventory Pooling & AI Demand Forecasting</div>
+        <div style="margin-top: 0.3rem; font-size: 0.78rem; color: var(--text-dim);">
+          Backed by PostgreSQL 15 &bull; Real-Time Haversine Geolocation Engine &bull; UPI Ready
+        </div>
+      </div>
+
+      <div class="footer-links-row">
+        <a href="/dashboard"><i class="bx bx-grid-alt"></i> Live Dashboard</a>
+        <a href="/login"><i class="bx bx-log-in"></i> Merchant Login</a>
+        <a href="/register"><i class="bx bx-user-plus"></i> Register Store</a>
+        <a href="#how-it-works"><i class="bx bx-help-circle"></i> How It Works</a>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

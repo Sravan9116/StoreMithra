@@ -1,0 +1,27 @@
+{
+  "name": "storemithra",
+  "version": "1.0.0",
+  "description": "StoreMithra - A Multi-Store Inventory Pooling, Forecasting & Transfer Platform",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node src/seed/seedData.js",
+    "test": "node test/engine.test.js"
+  },
+  "keywords": [
+    "inventory-pooling",
+    "forecasting",
+    "retail",
+    "decision-support",
+    "kirana"
+  ],
+  "author": "StoreMithra Team",
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "^11.8.1",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "pg": "^8.23.0"
+  }
+}

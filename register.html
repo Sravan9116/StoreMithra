@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register Kirana Store — StoreMithra Inventory Pooling</title>
+  <meta name="description" content="Register your local Kirana store with StoreMithra to pool inventory, eliminate stockouts, and collaborate with neighboring merchants.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Boxicons CSS Icons -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+  <!-- Design System Stylesheet -->
+  <link rel="stylesheet" href="public/css/style.css?v=3.2">
+</head>
+
+<body class="auth-body">
+  <!-- Top Navigation Header -->
+  <header class="auth-nav">
+    <a href="/" class="brand">
+      <div class="logo-icon"><i class="bx bxs-store-alt"></i></div>
+      <span class="brand-title">StoreMithra</span>
+    </a>
+    <div class="nav-links">
+      <a href="/" class="btn btn-ghost btn-sm" title="View Site Overview & How StoreMithra Works">
+        <i class="bx bx-home-alt"></i> Site Overview
+      </a>
+      <a href="/login" class="btn btn-secondary btn-sm">
+        <i class="bx bx-log-in"></i> Merchant Login
+      </a>
+    </div>
+  </header>
+
+  <!-- Centered Registration Container -->
+  <main class="auth-container">
+    <div class="auth-card auth-card-wide">
+      <div class="auth-card-header">
+        <div class="auth-badge-icon">
+          <i class="bx bxs-store"></i>
+        </div>
+        <h1 class="auth-card-title">Register Your Kirana Store</h1>
+        <p class="auth-card-subtitle">
+          Join the StoreMithra collaborative network. Real-time PostgreSQL 15 inventory syncing, AI demand forecasting, and zero-stockout neighbor pooling.
+        </p>
+      </div>
+
+      <!-- Alert Notification Banner -->
+      <div id="authAlert" class="auth-alert-box">
+        <i class="bx bx-info-circle" id="alertIcon"></i>
+        <span id="alertMsg">Message goes here</span>
+      </div>
+
+      <!-- Registration Form -->
+      <form id="merchantRegisterForm" autocomplete="off">
+        <!-- Row 1: Merchant & Store Name -->
+        <div class="auth-grid-2">
+          <div class="auth-input-group">
+            <label for="regOwnerName">
+              <i class="bx bx-user"></i> Store Owner Name
+            </label>
+            <div class="auth-input-wrapper">
+              <i class="bx bx-id-card auth-input-icon"></i>
+              <input type="text" id="regOwnerName" name="owner_name" placeholder="e.g. Ramesh Gupta" required autofocus />
+            </div>
+          </div>
+
+          <div class="auth-input-group">
+            <label for="regStoreName">
+              <i class="bx bx-store-alt"></i> Kirana Store Name
+            </label>
+            <div class="auth-input-wrapper">
+              <i class="bx bx-shopping-bag auth-input-icon"></i>
+              <input type="text" id="regStoreName" name="name" placeholder="e.g. Sri Raghavendra Provision Stores" required />
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2: Phone & Security PIN -->
+        <div class="auth-grid-2">
+          <div class="auth-input-group">
+            <label for="regPhone">
+              <i class="bx bx-phone"></i> 10-Digit Mobile Number
+            </label>
+            <div class="auth-input-wrapper">
+              <i class="bx bx-mobile-alt auth-input-icon"></i>
+              <input type="tel" id="regPhone" name="phone" placeholder="e.g. 98455 66778" required />
+            </div>
+          </div>
+
+          <div class="auth-input-group">
+            <label for="regPin">
+              <i class="bx bx-shield-quarter"></i> 4-Digit Security PIN
+            </label>
+            <div class="auth-input-wrapper">
+              <i class="bx bx-key auth-input-icon"></i>
+              <input type="password" id="regPin" name="pin" placeholder="e.g. 1234" maxlength="6" value="1234" required />
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 3: Settlement UPI ID -->
+        <div class="auth-input-group">
+          <label for="regUpiId">
+            <i class="bx bx-credit-card"></i> UPI ID for Instant Transfer Settlements
+          </label>
+          <div class="auth-input-wrapper">
+            <i class="bx bx-wallet-alt auth-input-icon"></i>
+            <input type="text" id="regUpiId" name="upi_id" placeholder="e.g. raghavendra@okhdfc" required />
+          </div>
+        </div>
+
+        <!-- Row 4: Store Address & Neighborhood -->
+        <div class="auth-input-group">
+          <label for="regAddress">
+            <i class="bx bx-map-pin"></i> Neighborhood & Store Address
+          </label>
+          <div class="auth-input-wrapper">
+            <i class="bx bx-map auth-input-icon"></i>
+            <input type="text" id="regAddress" name="address" placeholder="e.g. 12th Main Road, HAL 2nd Stage, Indiranagar, Bangalore" required />
+          </div>
+
+          <!-- Quick Neighborhood Selection Pills -->
+          <div class="neighborhood-chips">
+            <span style="font-size: 0.75rem; color: var(--text-muted); align-self: center; margin-right: 0.25rem;">Bangalore Hubs:</span>
+            <button type="button" class="chip-btn" onclick="selectNeighborhood('Indiranagar, Bangalore', 12.9784, 77.6408)">
+              <i class="bx bx-map-pin"></i> Indiranagar
+            </button>
+            <button type="button" class="chip-btn" onclick="selectNeighborhood('Koramangala, Bangalore', 12.9352, 77.6245)">
+              <i class="bx bx-map-pin"></i> Koramangala
+            </button>
+            <button type="button" class="chip-btn" onclick="selectNeighborhood('HAL 2nd Stage, Bangalore', 12.9654, 77.6534)">
+              <i class="bx bx-map-pin"></i> HAL 2nd Stage
+            </button>
+            <button type="button" class="chip-btn" onclick="selectNeighborhood('Domlur, Bangalore', 12.9609, 77.6387)">
+              <i class="bx bx-map-pin"></i> Domlur
+            </button>
+            <button type="button" class="chip-btn" onclick="selectNeighborhood('Whitefield, Bangalore', 12.9698, 77.7499)">
+              <i class="bx bx-map-pin"></i> Whitefield
+            </button>
+            <button type="button" class="chip-btn" onclick="selectNeighborhood('Malleshwaram, Bangalore', 13.0031, 77.5643)">
+              <i class="bx bx-map-pin"></i> Malleshwaram
+            </button>
+          </div>
+          <input type="hidden" id="regLat" name="lat" value="12.9716" />
+          <input type="hidden" id="regLng" name="lng" value="77.5946" />
+        </div>
+
+        <!-- Row 5: Data Sharing & Collaborative Mode -->
+        <div class="auth-input-group">
+          <label>
+            <i class="bx bx-share-alt"></i> Collaborative Pooling & Data Sharing Mode
+          </label>
+          <div class="sharing-mode-selector">
+            <div class="sharing-option-card selected" onclick="setSharingMode('full', this)">
+              <i class="bx bxs-shield-quarter mode-icon"></i>
+              <span class="sharing-option-title">Full Pooling</span>
+              <span class="sharing-option-desc">Share stock levels in real time for mutual neighbor transfers and safety.</span>
+            </div>
+
+            <div class="sharing-option-card" onclick="setSharingMode('limited', this)">
+              <i class="bx bx-shield-quarter mode-icon"></i>
+              <span class="sharing-option-title">Limited Share</span>
+              <span class="sharing-option-desc">Share aggregate demand indicators while masking exact on-shelf units.</span>
+            </div>
+
+            <div class="sharing-option-card" onclick="setSharingMode('privacy_preserving', this)">
+              <i class="bx bx-lock-alt mode-icon"></i>
+              <span class="sharing-option-title">Privacy Mode</span>
+              <span class="sharing-option-desc">Cryptographic matching only when a critical stockout risk occurs.</span>
+            </div>
+          </div>
+          <input type="hidden" id="regSharingMode" name="data_sharing_mode" value="full" />
+        </div>
+
+        <!-- Row 6: Provision Starter Kirana Stock Checkbox -->
+        <div class="inventory-seed-box">
+          <input type="checkbox" id="regSeedInventory" name="seed_starter_inventory" checked />
+          <div>
+            <div class="inventory-seed-title">
+              <i class="bx bx-package"></i> Provision Starter Inventory (25 Standard Kirana SKUs)
+            </div>
+            <div class="inventory-seed-desc">
+              Automatically initialize your store in PostgreSQL with 25 fast-moving essentials (Nandini Milk, Aashirvaad Atta, Fortune Oil, Tata Tea, Maggi, Dettol) with 98% initial confidence.
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <button type="submit" id="btnRegisterSubmit" class="btn-auth-submit">
+          <i class="bx bx-check-shield"></i> Complete Registration & Open Store
+        </button>
+      </form>
+
+      <div class="auth-footer-links">
+        <p>Already have a registered Kirana store? <a href="/login">Log into merchant portal <i class="bx bx-right-arrow-alt"></i></a></p>
+        <p style="margin-top: 0.5rem;"><a href="/" style="color: var(--text-muted); font-weight: normal;"><i class="bx bx-home-alt"></i> Return to Site Overview & How It Works</a></p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const form = document.getElementById('merchantRegisterForm');
+    const storeNameInput = document.getElementById('regStoreName');
+    const upiInput = document.getElementById('regUpiId');
+    const phoneInput = document.getElementById('regPhone');
+    const addressInput = document.getElementById('regAddress');
+    const latInput = document.getElementById('regLat');
+    const lngInput = document.getElementById('regLng');
+    const sharingInput = document.getElementById('regSharingMode');
+    const seedInput = document.getElementById('regSeedInventory');
+    const submitBtn = document.getElementById('btnRegisterSubmit');
+    const alertBox = document.getElementById('authAlert');
+    const alertMsg = document.getElementById('alertMsg');
+    const alertIcon = document.getElementById('alertIcon');
+
+    function showAlert(message, type = 'error') {
+      alertBox.className = 'auth-alert-box ' + (type === 'success' ? 'auth-alert-success' : 'auth-alert-error');
+      alertIcon.className = type === 'success' ? 'bx bx-check-circle' : 'bx bx-error-circle';
+      alertMsg.textContent = message;
+      alertBox.style.display = 'flex';
+    }
+
+    function hideAlert() {
+      alertBox.style.display = 'none';
+    }
+
+    // Auto phone format helper
+    phoneInput.addEventListener('input', (e) => {
+      let val = e.target.value.replace(/\D/g, '');
+      if (val.length > 10) val = val.slice(0, 10);
+      if (val.length > 5) {
+        e.target.value = val.slice(0, 5) + ' ' + val.slice(5);
+      } else {
+        e.target.value = val;
+      }
+    });
+
+    // Auto-suggest UPI ID from store name
+    storeNameInput.addEventListener('blur', () => {
+      if (!upiInput.value.trim() && storeNameInput.value.trim()) {
+        const clean = storeNameInput.value.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 15);
+        if (clean) {
+          upiInput.value = `${clean}@okaxis`;
+        }
+      }
+    });
+
+    // Neighborhood presets
+    window.selectNeighborhood = function (addr, lat, lng) {
+      addressInput.value = addr;
+      latInput.value = lat;
+      lngInput.value = lng;
+    };
+
+    // Sharing mode selector
+    window.setSharingMode = function (mode, cardEl) {
+      sharingInput.value = mode;
+      document.querySelectorAll('.sharing-option-card').forEach(c => c.classList.remove('selected'));
+      cardEl.classList.add('selected');
+    };
+
+    // Form submission
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideAlert();
+
+      const owner_name = document.getElementById('regOwnerName').value.trim();
+      const name = storeNameInput.value.trim();
+      const phone = phoneInput.value.trim();
+      const pin = document.getElementById('regPin').value.trim();
+      const upi_id = upiInput.value.trim();
+      const address = addressInput.value.trim();
+      const lat = parseFloat(latInput.value) || 12.9716;
+      const lng = parseFloat(lngInput.value) || 77.5946;
+      const data_sharing_mode = sharingInput.value;
+      const seed_starter_inventory = seedInput.checked;
+
+      if (!owner_name || !name) {
+        showAlert('Please provide both Store Owner Name and Kirana Store Name.');
+        return;
+      }
+
+      if (phone.replace(/\D/g, '').length < 10) {
+        showAlert('Please enter a valid 10-digit mobile number.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = "<i class='bx bx-loader-alt bx-spin'></i> Provisioning in PostgreSQL...";
+
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            owner_name,
+            name,
+            phone,
+            pin,
+            upi_id,
+            address,
+            lat,
+            lng,
+            data_sharing_mode,
+            seed_starter_inventory
+          })
+        });
+
+        const data = await res.json();
+
+        if (data.success && data.store) {
+          localStorage.setItem('storemithra_token', data.token);
+          localStorage.setItem('storemithra_active_store', JSON.stringify(data.store));
+          showAlert(`Welcome to StoreMithra, ${data.store.owner_name}! Your store "${data.store.name}" is now live in PostgreSQL. Redirecting...`, 'success');
+          setTimeout(() => {
+            window.location.href = '/dashboard';
+          }, 900);
+        } else {
+          showAlert(data.error || 'Registration failed. Please check your details.');
+        }
+      } catch (err) {
+        console.error('Registration failed:', err);
+        showAlert('Network error while registering store.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = "<i class='bx bx-check-shield'></i> Complete Registration & Open Store";
+      }
+    });
+  </script>
+</body>
+
+</html>
